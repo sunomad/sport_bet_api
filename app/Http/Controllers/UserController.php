@@ -73,7 +73,24 @@ class UserController extends Controller
      */
     public function updateUser(Request $request, User $user)
     {
+        $validator = Validator::make($request->all(), [
+            'username'   => 'unique:users,username,'.$user->id.'|max:255',
+            'email'      => 'unique:users,email,'.$user->id.'|email|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            $result = ['success' => false, 'errors' => $validator->errors()->all()];
+            return response()->json($result, 422);
+        }
         
+        $user->fill($request->all());
+        if(!$user->save()) {
+            Log::error('Unable to update user');
+            $result = ['success' => false, 'errors' => ['Unable to update user']];
+            return response()->json($result, 500);
+        }
+        
+        return response()->json(['success' => true], 200);
     }
     
     /**
@@ -85,6 +102,10 @@ class UserController extends Controller
      */
     public function deleteUser(Request $request, User $user)
     {
+        if(!$user->delete()) {
+            return response()->json(['success' => false, 'errors' => ['Unable to delete user']], 500);
+        }
         
+        return response()->json(['success' => true], 200);
     }
 }
