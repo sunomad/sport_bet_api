@@ -61,6 +61,13 @@ class UserCest
     
     public function testUpdateUser(ApiTester $I)
     {
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendPATCH('users/1', $this->updated_user);
+        $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 201
+        $I->seeResponseIsJson();
+        $I->seeResponseContains('{"success":true}');
+        
+        $I->canSeeInDatabase('users', $this->updated_user);
     }
     
     public function testDeleteUser(ApiTester $I)
