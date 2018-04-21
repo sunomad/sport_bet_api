@@ -56,7 +56,10 @@ class UserCest
     
     public function testGetUser(ApiTester $I)
     {
-        
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendGET('users/1');
+        $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK);
+        $I->seeResponseIsJson();
     }
     
     public function testUpdateUser(ApiTester $I)
