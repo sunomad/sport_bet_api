@@ -8,3 +8,15 @@ actor_suffix: Tester
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
+modules: 
+    config: 
+        Db: 
+            dsn: 'mysql:host=%DB_HOST%;dbname=%DB_DATABASE%'
+            user: '%DB_USERNAME%'
+            password: '%DB_PASSWORD%'
+            dump: 'tests/_data/dump.sql'
+            populate: true
+            cleanup: true
+            reconnect: true
+params: 
+    - .env    # to get params from .env (Laravel style)

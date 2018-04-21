@@ -1,0 +1,18 @@
+actor: ApiTester
+modules:
+    enabled:
+        - \Helper\Api
+        - PhpBrowser: 
+            url: '%APP_URL%'
+        - REST:
+            url: '%APP_URL%'
+            depends: PhpBrowser
+            part: Json
+        - Db:
+            dsn: 'mysql:host=%DB_HOST%;dbname=%DB_DATABASE%'
+            user: '%DB_USERNAME%'
+            password: '%DB_PASSWORD%'
+            dump: 'tests/_data/dump.sql'
+            populate: false
+            cleanup: false
+            reconnect: true
