@@ -45,7 +45,7 @@ class UserCest
     {
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPOST('users', $this->user);
-        $I->seeResponseCodeIs(\Codeception\Util\HttpCode::CREATED); // 201
+        $I->seeResponseCodeIs(\Codeception\Util\HttpCode::CREATED);
         $I->seeResponseIsJson();
         $I->seeResponseContains('{"success":true}');
         
@@ -63,7 +63,7 @@ class UserCest
     {
         $I->haveHttpHeader('Content-Type', 'application/json');
         $I->sendPATCH('users/1', $this->updated_user);
-        $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 201
+        $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK);
         $I->seeResponseIsJson();
         $I->seeResponseContains('{"success":true}');
         
@@ -72,5 +72,12 @@ class UserCest
     
     public function testDeleteUser(ApiTester $I)
     {
+        $I->haveHttpHeader('Content-Type', 'application/json');
+        $I->sendDELETE('users/1');
+        $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK);
+        $I->seeResponseIsJson();
+        $I->seeResponseContains('{"success":true}');
+        
+        $I->cantSeeInDatabase('users', $this->updated_user);
     }
 }
