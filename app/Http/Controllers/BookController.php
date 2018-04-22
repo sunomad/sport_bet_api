@@ -12,15 +12,18 @@ use App\Repositories\BookRepository;
 class BookController extends Controller
 {    
     /**
-     * Place a batch of bets from a users on multiple matches
+     * Place a batch of bets from multiple users on multiple matches. 
+     * Each bet is validated individually. Valid bets will be saved, 
+     * and for invalid bets errors will be returned. 
      * 
      * @param Request $request
      * @return Response
      */
     public function placeBets(Request $request)
     {
-        $errors = [];
-        $bets   = $request->all();
+        $errors  = [];
+        $success = false;
+        $bets    = $request->all();
         foreach ($bets as $key => $bet) {
             $validator = Validator::make($bet, [
                 'transaction_id'     => 'required|unique:bets',
@@ -34,19 +37,29 @@ class BookController extends Controller
 
             if ($validator->fails()) {
                 $errors["bet_$key"] = $validator->errors()->all();
+                
+                // remove invalid bet from the array
+                unset($bets[$key]);
+            } else {
+                $success = true;
             }
+            unset($validator);
         }
         
-        if(!empty($errors)) {
+        if(!empty($errors) && $success === false) {
             $result = ['success' => false, 'errors' => $errors];
             return response()->json($result, 422);
         }
         
         $repository = new BookRepository();        
-        if(!$repository->saveMultipleBets($request->all())) {
-            Log::error('Unable to save bet');
-            $result = ['success' => false, 'errors' => ['Unable to save bet']];
+        if(!$repository->saveMultipleBets(array_values($bets))) {
+            Log::error('Unable to save any bets');
+            $result = ['success' => false, 'errors' => ['Unable to save any bets']];
             return response()->json($result, 500);
+        }
+        
+        if (!empty($errors)) {
+            return response()->json(['success' => 'partial', 'errors' => $errors], 207);
         }
         
         return response()->json(['success' => true], 200);
