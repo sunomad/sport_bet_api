@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Bet;
+use App\Models\Win;
 use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
@@ -12,15 +14,6 @@ class User extends Model
      * @var array
      */
     protected $guarded = ['balance', 'active'];
-    
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-//    protected $fillable = [
-//        'name', 'email', 'password',
-//    ];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -30,4 +23,14 @@ class User extends Model
     protected $hidden = [
         'password',
     ];
+    
+    public function bets()
+    {
+        return $this->hasMany(Bet::class);
+    }
+    
+    public function wins()
+    {
+        return $this->hasMany(Win::class);
+    }
 }
