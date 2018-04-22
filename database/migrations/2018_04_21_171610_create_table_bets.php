@@ -17,7 +17,7 @@ class CreateTableBets extends Migration
             $table->increments('id');
             $table->integer('match_id')->unsigned();
             $table->integer('user_id')->unsigned();
-            $table->timestamp('match_date');
+            $table->date('match_date');
             $table->decimal('amount');
             $table->integer('predicted_winner');  // relation to team_id
             $table->tinyInteger('cancelled')->nullable()->default(0);
@@ -26,6 +26,7 @@ class CreateTableBets extends Migration
             $table->engine = 'InnoDB';
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('match_id')->references('id')->on('matches');
+            $table->foreign('predicted_winner')->references('id')->on('teams');
         });
     }
 

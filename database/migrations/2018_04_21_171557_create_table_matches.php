@@ -17,7 +17,7 @@ class CreateTableMatches extends Migration
             $table->increments('id');
             $table->integer('home_team_id')->unsigned();
             $table->integer('visiting_team_id')->unsigned();
-            $table->timestamp('match_date');
+            $table->date('match_date');
             $table->tinyInteger('cancelled')->nullable()->default(0);
             $table->softDeletes();
             $table->timestamps();
