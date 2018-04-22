@@ -15,6 +15,7 @@ class CreateTableBets extends Migration
     {
         Schema::create('bets', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('transaction_id')->unique();
             $table->integer('match_id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->date('match_date');

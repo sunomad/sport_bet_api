@@ -39,9 +39,9 @@ class BookRepository
      */
     public function saveBet($data)
     {
-        $result = DB::insert("INSERT INTO `bets` (`match_id`, `user_id`, `match_date`, `amount`, `predicted_winner`) 
+        $result = DB::insert("INSERT INTO `bets` (`transaction_id`, `match_id`, `user_id`, `match_date`, `amount`, `predicted_winner`) 
         (
-       SELECT m.id, u.id, :matchdate1, :betamount, t.id from matches m
+       SELECT :transaction_id, m.id, u.id, :matchdate1, :betamount, t.id from matches m
        JOIN teams th on m.home_team_id = th.id
        JOIN teams tv on m.visiting_team_id = tv.id
        JOIN teams t on t.team_name = :predicted_winner
@@ -49,6 +49,7 @@ class BookRepository
        WHERE m.match_date = :matchdate2 AND th.team_name = :home_team_name AND tv.team_name = :visiting_team_name
        )", 
        [
+            'transaction_id'     => $data['transaction_id'],
             'matchdate1'         => $data['match_date'],
             'betamount'          => $data['bet_amount'],
             'predicted_winner'   => $data['predicted_winner'],           

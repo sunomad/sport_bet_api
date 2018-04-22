@@ -17,6 +17,7 @@ class BookController extends Controller
     public function placeBet(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'transaction_id'     => 'required|unique:bets',
             'match_date'         => 'required|date',
             'home_team_name'     => 'required',
             'visiting_team_name' => 'required',

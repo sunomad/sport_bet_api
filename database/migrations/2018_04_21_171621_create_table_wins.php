@@ -15,6 +15,7 @@ class CreateTableWins extends Migration
     {
         Schema::create('wins', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('transaction_id')->unique();
             $table->integer('match_id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->timestamp('match_date');
