@@ -13,6 +13,6 @@ modules:
             user: '%DB_USERNAME%'
             password: '%DB_PASSWORD%'
             dump: 'tests/_data/dump.sql'
-            populate: false
-            cleanup: false
+            populate: true
+            cleanup: true
             reconnect: true

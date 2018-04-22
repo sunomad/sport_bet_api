@@ -9,9 +9,9 @@ class UserCest
      * @var array 
      */
     public $user = [
-        "username"   => "testuser",
-        "email"      => "testuser@test.net",
-        "password"   => "HJ68gja765h",
+        "username"   => "testuser4",
+        "email"      => "testuser4@test.net",
+        "password"   => "75vUG6r",
         "first_name" => "Edwin",
         "last_name"  => "de Ridder",
         "address"    => "Triq something",
@@ -76,7 +76,7 @@ class UserCest
     public function testDeleteUser(ApiTester $I)
     {
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendDELETE('users/1');
+        $I->sendDELETE('users/3');
         $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK);
         $I->seeResponseIsJson();
         $I->seeResponseContains('{"success":true}');
