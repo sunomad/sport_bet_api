@@ -20,7 +20,7 @@ class CreateTableBets extends Migration
             $table->integer('user_id')->unsigned();
             $table->date('match_date');
             $table->decimal('amount');
-            $table->integer('predicted_winner');  // relation to team_id
+            $table->integer('predicted_winner')->unsigned();  // relation to team_id
             $table->tinyInteger('cancelled')->nullable()->default(0);
             $table->softDeletes();
             $table->timestamps();
