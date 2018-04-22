@@ -30,34 +30,44 @@ class BookRepository
         
         return $book;
     }
-    
+        
     /**
-     * Save a bet
+     * Saves multiple bets
      * 
      * @param array $data
      * @return boolean
      */
-    public function saveBet($data)
+    public function saveMultipleBets($data)
     {
-        $result = DB::insert("INSERT INTO `bets` (`transaction_id`, `match_id`, `user_id`, `match_date`, `amount`, `predicted_winner`) 
-        (
-        SELECT :transaction_id, m.id, u.id, :matchdate1, :betamount, t.id from matches m
-        JOIN teams th on m.home_team_id = th.id
-        JOIN teams tv on m.visiting_team_id = tv.id
-        JOIN teams t on t.team_name = :predicted_winner
-        JOIN users u on u.username = :username
-        WHERE m.match_date = :matchdate2 AND th.team_name = :home_team_name AND tv.team_name = :visiting_team_name
-        )", 
-        [
-            'transaction_id'     => $data['transaction_id'],
-            'matchdate1'         => $data['match_date'],
-            'betamount'          => $data['bet_amount'],
-            'predicted_winner'   => $data['predicted_winner'],           
-            'username'           => $data['username'],
-            'matchdate2'         => $data['match_date'],
-            'home_team_name'     => $data['home_team_name'],
-            'visiting_team_name' => $data['visiting_team_name']
-        ]);
+        $statement = "INSERT INTO `bets` (`transaction_id`, `match_id`, `user_id`, `match_date`, `amount`, `predicted_winner`) ";
+        
+        $params = [];
+        $number_of_bets = count($data);
+        for ($i = 0; $i < $number_of_bets; $i++) {
+            $statement .= "(
+                    SELECT :transaction_id{$i}, m.id, u.id, :matchdate1{$i}, :betamount{$i}, t.id from matches m
+                    JOIN teams th on m.home_team_id = th.id
+                    JOIN teams tv on m.visiting_team_id = tv.id
+                    JOIN teams t on t.team_name = :predicted_winner{$i}
+                    JOIN users u on u.username = :username{$i}
+                    WHERE m.match_date = :matchdate2{$i} AND th.team_name = :home_team_name{$i} AND tv.team_name = :visiting_team_name{$i}
+                )";
+                    
+            $params['transaction_id' . $i]     = $data[$i]['transaction_id'];
+            $params['matchdate1' . $i]         = $data[$i]['match_date'];
+            $params['betamount' . $i]          = $data[$i]['bet_amount'];
+            $params['predicted_winner' . $i]   = $data[$i]['predicted_winner'];
+            $params['username' . $i]           = $data[$i]['username'];
+            $params['matchdate2' . $i]         = $data[$i]['match_date'];
+            $params['home_team_name' . $i]     = $data[$i]['home_team_name'];
+            $params['visiting_team_name' . $i] = $data[$i]['visiting_team_name'];
+            
+            if($i < $number_of_bets - 1) {
+                $statement .= ' UNION ';
+            }
+        }
+        
+        $result = DB::insert($statement, $params);
         
         return $result;
     }

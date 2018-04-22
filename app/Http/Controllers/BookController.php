@@ -10,29 +10,40 @@ use App\Repositories\BookRepository;
 
 
 class BookController extends Controller
-{
+{    
     /**
-     * Place a bet for a user on a match
+     * Place a batch of bets from a users on multiple matches
+     * 
+     * @param Request $request
+     * @return Response
      */
-    public function placeBet(Request $request)
+    public function placeBets(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'transaction_id'     => 'required|unique:bets',
-            'match_date'         => 'required|date',
-            'home_team_name'     => 'required',
-            'visiting_team_name' => 'required',
-            'bet_amount'         => 'required',
-            'predicted_winner'   => 'required',
-            'username'           => 'required',
-        ]);
+        $errors = [];
+        $bets   = $request->all();
+        foreach ($bets as $key => $bet) {
+            $validator = Validator::make($bet, [
+                'transaction_id'     => 'required|unique:bets',
+                'match_date'         => 'required|date',
+                'home_team_name'     => 'required',
+                'visiting_team_name' => 'required',
+                'bet_amount'         => 'required',
+                'predicted_winner'   => 'required',
+                'username'           => 'required',
+            ]);
 
-        if ($validator->fails()) {
-            $result = ['success' => false, 'errors' => $validator->errors()->all()];
+            if ($validator->fails()) {
+                $errors["bet_$key"] = $validator->errors()->all();
+            }
+        }
+        
+        if(!empty($errors)) {
+            $result = ['success' => false, 'errors' => $errors];
             return response()->json($result, 422);
         }
         
         $repository = new BookRepository();        
-        if(!$repository->saveBet($request->all())) {
+        if(!$repository->saveMultipleBets($request->all())) {
             Log::error('Unable to save bet');
             $result = ['success' => false, 'errors' => ['Unable to save bet']];
             return response()->json($result, 500);

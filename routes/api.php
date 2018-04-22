@@ -28,6 +28,6 @@ Route::group(['prefix' => 'v1'], function () {
     
     Route::group(['prefix' => 'books'], function () {
         Route::get('', 'BookController@getBook');
-        Route::post('', 'BookController@placeBet');
+        Route::post('', 'BookController@placeBets');
     });
 });
