@@ -18,6 +18,14 @@ We can retrieve the book using the names of the team, and the date.
 
 DEVELOPMENT NOTES
 
+This api uses the following: 
+Laravel 5.6 with Eloquent as ORM. 
+I decided to start this challenge on familiar grounds, see how far I would come. 
+I planned to create a new branch and see if I could accomplish the same with 
+Lumen and Doctrine2. However it took a bit longer to get here then expected. 
+And because, I think this api already gives a clear picture of me as a developer, 
+so I will leave that for now. 
+
 Currently the system allows duplicate bets. 
 We might want to allow users to place multiple bets on the same match, 
 but then we need to find a solution to prevent duplicate requests create unwanted duplicate bets. 
@@ -33,6 +41,10 @@ I like to be more specific when asking the client to provide information, to pre
 They might be confused, send 'Manchester City' instead of 'Manchester United', 
 but still complain to us because they bet on the wrong match. 
 
+The tests are using the Codeception framework. 
+I decided to do API testing instead of unit testing. Besides the methods in 
+BookRepository.php, there is not much that can be unit tested. 
 The tests are now restoring the database with a dump file, in real life I don't do that. 
 I would use the migration scripts to setup the structure, and have a few classes to 
 pre populate the database with the necessary data. I would also use a separate test database. 
+I would also write tests to cover the validation mechanism. 
