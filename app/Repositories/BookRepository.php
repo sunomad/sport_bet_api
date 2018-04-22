@@ -41,14 +41,14 @@ class BookRepository
     {
         $result = DB::insert("INSERT INTO `bets` (`transaction_id`, `match_id`, `user_id`, `match_date`, `amount`, `predicted_winner`) 
         (
-       SELECT :transaction_id, m.id, u.id, :matchdate1, :betamount, t.id from matches m
-       JOIN teams th on m.home_team_id = th.id
-       JOIN teams tv on m.visiting_team_id = tv.id
-       JOIN teams t on t.team_name = :predicted_winner
-       JOIN users u on u.username = :username
-       WHERE m.match_date = :matchdate2 AND th.team_name = :home_team_name AND tv.team_name = :visiting_team_name
-       )", 
-       [
+        SELECT :transaction_id, m.id, u.id, :matchdate1, :betamount, t.id from matches m
+        JOIN teams th on m.home_team_id = th.id
+        JOIN teams tv on m.visiting_team_id = tv.id
+        JOIN teams t on t.team_name = :predicted_winner
+        JOIN users u on u.username = :username
+        WHERE m.match_date = :matchdate2 AND th.team_name = :home_team_name AND tv.team_name = :visiting_team_name
+        )", 
+        [
             'transaction_id'     => $data['transaction_id'],
             'matchdate1'         => $data['match_date'],
             'betamount'          => $data['bet_amount'],
