@@ -2,9 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Models\Bet;
-use App\Models\User;
-use App\Models\Team;
 use Illuminate\Support\Facades\DB;
 
 class BookRepository
@@ -42,21 +39,26 @@ class BookRepository
      */
     public function saveBet($data)
     {
-        $match = Db::table('matches')->select('matches.id')->where('match_date', $data['match_date'])
-                ->join('teams as th', 'matches.home_team_id', '=', 'th.id')
-                ->join('teams as tv', 'matches.visiting_team_id', '=', 'tv.id')
-                ->where('th.team_name', $data['home_team_name'])
-                ->where('tv.team_name', $data['visiting_team_name'])
-                ->first();
+        $result = DB::insert("INSERT INTO `bets` (`match_id`, `user_id`, `match_date`, `amount`, `predicted_winner`) 
+        (
+       SELECT m.id, u.id, :matchdate1, :betamount, t.id from matches m
+       JOIN teams th on m.home_team_id = th.id
+       JOIN teams tv on m.visiting_team_id = tv.id
+       JOIN teams t on t.team_name = :predicted_winner
+       JOIN users u on u.username = :username
+       WHERE m.match_date = :matchdate2 AND th.team_name = :home_team_name AND tv.team_name = :visiting_team_name
+       )", 
+       [
+            'matchdate1'         => $data['match_date'],
+            'betamount'          => $data['bet_amount'],
+            'predicted_winner'   => $data['predicted_winner'],           
+            'username'           => $data['username'],
+            'matchdate2'         => $data['match_date'],
+            'home_team_name'     => $data['home_team_name'],
+            'visiting_team_name' => $data['visiting_team_name']
+        ]);
         
-        $bet = new Bet();
-        $bet->match_id         = $match->id;
-        $bet->user_id          = User::where('username', $data['username'])->first()->id;
-        $bet->match_date       = $data['match_date'];
-        $bet->amount           = $data['bet_amount'];
-        $bet->predicted_winner = Team::where('team_name', $data['predicted_winner'])->first()->id;
-        
-        return $bet->save();
+        return $result;
     }
 }
 
